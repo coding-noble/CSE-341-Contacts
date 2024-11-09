@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/coding-noble/CSE-341-Contacts/issues"
   },
-  "homepage": "https://github.com/coding-noble/CSE-341-Contacts#readme"
+  "homepage": "https://github.com/coding-noble/CSE-341-Contacts#readme",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
 }
