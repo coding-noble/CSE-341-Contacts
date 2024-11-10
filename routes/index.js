@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 });
 
 // Use path.join() to build the path to the 'users' module dynamically for the /users route 
-router.use("/users", require(path.join(__dirname, "users")));
+router.use("/users", require(path.join(__dirname, "users.js")));
 
 // Export the router so it can be used elsewhere
 module.exports = router;
