@@ -1,5 +1,8 @@
+// import the path module
+const path = require("path");
+
 // Import the necessary MongoDB functions
-const mongodb = require("../data/database");
+const mongodb = require(path.join("..", "data", "database"));
 const ObjectId = require("mongodb").ObjectId;
 
 // Async function to get all users from the "users" collection within the database
