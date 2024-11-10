@@ -24,7 +24,7 @@ const getAll = async (req, res) => {
 
 const getSingle = async (req, res) => {
     // Extract the user ID from the URL parameters in the request and store it in userId
-    const userId = ObjectId(req.params.id)
+    const userId = new ObjectId(req.params.id)
 
     // call the database query and return a promise (difference is we pass in an _id in the .find())
     mongodb.getDatabase().collection("users").find({_id: userId}).toArray()
