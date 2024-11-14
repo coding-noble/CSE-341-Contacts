@@ -1,0 +1,12 @@
+// For LocalHost (26000)
+@localhost_url = http://localhost:26000
+
+### Get Local Host (Hello World Message)
+GET {{localhost_url}}
+
+### Get all Users
+GET {{localhost_url}}/users
+
+### Get Single User by ID
+@user_id = 672fb650fca0f38601529a08
+GET http://localhost:26000/users/{{user_id}}
