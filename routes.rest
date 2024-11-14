@@ -9,4 +9,32 @@ GET {{localhost_url}}/users
 
 ### Get Single User by ID
 @user_id = 672fb650fca0f38601529a08
-GET http://localhost:26000/users/{{user_id}}
+GET {{localhost_url}}/users/{{user_id}}
+
+
+### Create New User
+POST {{localhost_url}}/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "jane.doe123@example.com",
+  "username": "jane.doe123@example.com",
+  "name": "Jane Doe",
+  "ipaddress": "145.26.127.10"
+}
+
+### Put or Replace a User
+@update_user_id = 673552930acacd463c242a49
+PUT {{localhost_url}}/users/{{update_user_id}}
+Content-Type: application/json
+
+{
+  "email": "john.doe123@example.com",
+  "username": "john.doe123@example.com",
+  "name": "John Doe",
+  "ipaddress": "145.26.127.10"
+}
+
+### DELETE User By ID
+@delete_user_id = 673552930acacd463c242a49
+DELETE {{localhost_url}}/users/{{delete_user_id}}

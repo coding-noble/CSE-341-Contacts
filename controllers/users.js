@@ -47,8 +47,57 @@ const getSingle = async (req, res) => {
     });
 }
 
+const createUser = async (req, res) => {
+    const user = {
+        email: req.body.email,
+        username: req.body.username,
+        name: req.body.name,
+        ipaddress: req.body.ipaddress
+    };
+
+    const response = await mongodb.getDatabase().collection("users").insertOne(user);
+    if (response.acknowledged) {
+        res.status(204).send();
+    }
+    else {
+        res.status(500).json(response.error || "Some error occurred while creating a new user");
+    }
+}
+
+const updateUser = async (req, res) => {
+    const userId = new ObjectId(req.params.id);
+    const user = {
+        email: req.body.email,
+        username: req.body.username,
+        name: req.body.name,
+        ipaddress: req.body.ipaddress
+    };
+
+    const response = await mongodb.getDatabase().collection("users").replaceOne({ _id: userId }, user);
+    if (response.modifiedCount > 0) {
+        res.status(204).send();
+    }
+    else {
+        res.status(500).json(response.error || "Some error occurred while updating the user");
+    }
+}
+
+const deleteUser = async (req, res) => {
+    const userId = new ObjectId(req.params.id);
+    const response = await mongodb.getDatabase().collection("users").deleteOne({ _id: userId });
+    if (response.deleteCount > 0) {
+        res.status(204).send();
+    }
+    else {
+        res.status(500).json(response.error || "Some error occurred while deleting the user");
+    }
+}
+
 // Export the functions so they can be used elsewhere
 module.exports = {
     getAll,
-    getSingle
+    getSingle,
+    createUser,
+    updateUser,
+    deleteUser
 }

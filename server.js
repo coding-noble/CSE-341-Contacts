@@ -1,4 +1,5 @@
-// import the Express and path modules
+// import the Express path, and bodyParser modules
+const bodyParser = require("body-parser");
 const express = require("express");
 const path = require("path");
 
@@ -11,6 +12,9 @@ const port = process.env.PORT || 26000;
 // Create universal paths
 const mongodb = require(path.join(__dirname, "data", "database.js"));
 const routes = require(path.join(__dirname, "routes"));
+
+// Use body-parser middleware for getting the parts of the user in the request
+app.use(bodyParser.json());
 
 // Use routes middleware for handling routes
 app.use("/", routes);
@@ -28,7 +32,7 @@ const startServer = async () => {
     console.error('Error initializing database:', err);
     process.exit(1); // Exit the process if there are any errors
   });
-};
+}
 
 // run the startServer async function
 startServer();
