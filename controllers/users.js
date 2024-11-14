@@ -7,6 +7,7 @@ const ObjectId = require("mongodb").ObjectId;
 
 // Async function to get all users from the "users" collection within the database
 const getAll = async (req, res) => {
+    //#swagger.tag=["Users"]
     // call the database query and return a promise
     mongodb.getDatabase().collection("users").find().toArray()
     .then((users) => {
@@ -26,6 +27,7 @@ const getAll = async (req, res) => {
 }
 
 const getSingle = async (req, res) => {
+    //#swagger.tag=["Users"]
     // Extract the user ID from the URL parameters in the request and store it in userId
     const userId = new ObjectId(req.params.id)
 
@@ -48,6 +50,7 @@ const getSingle = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
+    //#swagger.tag=["Users"]
     const user = {
         email: req.body.email,
         username: req.body.username,
@@ -65,6 +68,7 @@ const createUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
+    //#swagger.tag=["Users"]
     const userId = new ObjectId(req.params.id);
     const user = {
         email: req.body.email,
@@ -83,6 +87,7 @@ const updateUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
+    //#swagger.tag=["Users"]
     const userId = new ObjectId(req.params.id);
     const response = await mongodb.getDatabase().collection("users").deleteOne({ _id: userId });
     if (response.deleteCount > 0) {

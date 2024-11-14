@@ -5,9 +5,13 @@ const path = require("path");
 // Create a new router object to handle HTTP requests
 const router = express.Router();
 
+// Define a route for swagger
+router.use('/', require("./swagger"))
+
 // Define a route for the root URL ("/" when there is nothing after the port number) that responds with a "Hello World!" message
 router.get("/", (req, res) => {
     // Send a 200 OK response with the "Hello World!" message
+    //#swagger.tags=['Hello World']
     res.status(200).send("Hello World!");
 });
 

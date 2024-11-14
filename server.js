@@ -16,6 +16,16 @@ const routes = require(path.join(__dirname, "routes"));
 // Use body-parser middleware for getting the parts of the user in the request
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", '*');
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Z-Key"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
 // Use routes middleware for handling routes
 app.use("/", routes);
 
