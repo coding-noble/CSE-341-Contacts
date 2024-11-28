@@ -1,9 +1,8 @@
 const express = require("express");
-const path = require("path");
 const router = express.Router();
 
-// Importing the usersController which contains the logic for handling requests
-const usersController = require(path.join("..", "controllers", "users.js"))
+// Importing the usersController directly
+const usersController = require("../controllers/users");
 
 // GET Route to get all users
 router.get("/", usersController.getAll);
@@ -12,13 +11,13 @@ router.get("/", usersController.getAll);
 router.get("/:id", usersController.getSingle);
 
 // POST Route to create a new user
-router.post("/", usersController.createUser)
+router.post("/", usersController.createUser);
 
 // PUT Route to update a user by ID
-router.put("/:id", usersController.updateUser)
+router.put("/:id", usersController.updateUser);
 
 // DELETE Route to delete a user by ID
-router.delete("/:id", usersController.updateUser)
+router.delete("/:id", usersController.deleteUser);
 
 // Export the router so it can be used elsewhere
-module.exports = router
+module.exports = router;

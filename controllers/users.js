@@ -1,56 +1,39 @@
-// import the path module
-const path = require("path");
-
-// Import the necessary MongoDB functions
-const mongodb = require(path.join("..", "data", "database"));
-const ObjectId = require("mongodb").ObjectId;
+// Directly import MongoDB functions and ObjectId
+const mongodb = require("../data/database");
+const { ObjectId } = require("mongodb");
 
 // Async function to get all users from the "users" collection within the database
 const getAll = async (req, res) => {
     //#swagger.tag=["Users"]
-    // call the database query and return a promise
-    mongodb.getDatabase().collection("users").find().toArray()
-    .then((users) => {
-        // In the response set the Content-Type header to "application/json"
+    try {
+        const users = await mongodb.getDatabase().collection("users").find().toArray();
         res.setHeader('Content-Type', "application/json");
-
-        // send a 200 OK status
         res.status(200).json(users);
-    })
-    // if any problems arise catch the errors and log the message
-    .catch((err) => {
+    } catch (err) {
         console.error(err);
-
-        // Send an internal server error response
         res.status(500).json({ error: "Failed to fetch users" });
-    });
+    }
 }
 
+// Get a single user by ID
 const getSingle = async (req, res) => {
     //#swagger.tag=["Users"]
-    // Extract the user ID from the URL parameters in the request and store it in userId
-    const userId = new ObjectId(req.params.id)
+    const userId = new ObjectId(req.params.id);
 
-    // call the database query and return a promise (difference is we pass in an _id in the .find())
-    mongodb.getDatabase().collection("users").find({_id: userId}).toArray()
-    .then((users) => {
-        // In the response set the Content-Type header to "application/json"
+    try {
+        const users = await mongodb.getDatabase().collection("users").find({ _id: userId }).toArray();
         res.setHeader('Content-Type', "application/json");
-
-        // send a 200 OK status
         res.status(200).json(users[0]);
-    })
-    // if any problems arise catch the errors and log the message
-    .catch((err) => {
+    } catch (err) {
         console.error(err);
-
-        // Send an internal server error response (same as getAll)
-        res.status(500).json({ error: "Failed to fetch users" });
-    });
+        res.status(500).json({ error: "Failed to fetch user" });
+    }
 }
 
+// Create a new user
 const createUser = async (req, res) => {
-    //#swagger.tag=["Users"]
+    console.log('Received request to create user:', req.body);
+
     const user = {
         email: req.body.email,
         username: req.body.username,
@@ -58,15 +41,25 @@ const createUser = async (req, res) => {
         ipaddress: req.body.ipaddress
     };
 
-    const response = await mongodb.getDatabase().collection("users").insertOne(user);
-    if (response.acknowledged) {
-        res.status(204).send();
-    }
-    else {
-        res.status(500).json(response.error || "Some error occurred while creating a new user");
-    }
-}
+    try {
+        const response = await mongodb.getDatabase().collection("users").insertOne(user);
+        console.log('MongoDB response:', response);
 
+        if (response.acknowledged) {
+            const newUser = { ...user, _id: response.insertedId };
+            console.log('New user created:', newUser);
+            return res.status(201).json(newUser);
+        } else {
+            console.error('Failed to create user:', response);
+            return res.status(500).json({ error: "Failed to create user" });
+        }
+    } catch (err) {
+        console.error('Error creating user:', err);
+        return res.status(500).json({ error: err.message });
+    }
+};
+
+// Update user by ID
 const updateUser = async (req, res) => {
     //#swagger.tag=["Users"]
     const userId = new ObjectId(req.params.id);
@@ -77,26 +70,45 @@ const updateUser = async (req, res) => {
         ipaddress: req.body.ipaddress
     };
 
-    const response = await mongodb.getDatabase().collection("users").replaceOne({ _id: userId }, user);
-    if (response.modifiedCount > 0) {
-        res.status(204).send();
-    }
-    else {
-        res.status(500).json(response.error || "Some error occurred while updating the user");
+    try {
+        const response = await mongodb.getDatabase().collection("users").replaceOne({ _id: userId }, user);
+        if (response.modifiedCount > 0) {
+            res.status(204).send();
+        } else {
+            res.status(500).json(response.error || "Some error occurred while updating the user");
+        }
+    } catch (err) {
+        console.error('Error updating user:', err);
+        res.status(500).json({ error: "Failed to update user" });
     }
 }
 
+// Delete user by ID
 const deleteUser = async (req, res) => {
     //#swagger.tag=["Users"]
-    const userId = new ObjectId(req.params.id);
-    const response = await mongodb.getDatabase().collection("users").deleteOne({ _id: userId });
-    if (response.deleteCount > 0) {
+    const userId = req.params.id;
+
+    if (!ObjectId.isValid(userId)) {
+        return res.status(400).json({ error: "Invalid user ID format" });
+    }
+
+    try {
+        const user = await mongodb.getDatabase().collection("users").findOne({ _id: new ObjectId(userId) });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const result = await mongodb.getDatabase().collection("users").deleteOne({ _id: new ObjectId(userId) });
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: "User not found or already deleted" });
+        }
+
         res.status(204).send();
+    } catch (err) {
+        console.error("Error deleting user:", err);
+        res.status(500).json({ error: "Failed to delete user" });
     }
-    else {
-        res.status(500).json(response.error || "Some error occurred while deleting the user");
-    }
-}
+};
 
 // Export the functions so they can be used elsewhere
 module.exports = {

@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 
 ### Put or Replace a User
-@update_user_id = 673552930acacd463c242a49
+@update_user_id = 6748f5dd5db7e591c45099c8
 PUT {{localhost_url}}/users/{{update_user_id}}
 Content-Type: application/json
 
@@ -36,5 +36,5 @@ Content-Type: application/json
 }
 
 ### DELETE User By ID
-@delete_user_id = 673552930acacd463c242a49
+@delete_user_id = 6748f5dd5db7e591c45099c8
 DELETE {{localhost_url}}/users/{{delete_user_id}}
